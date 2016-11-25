@@ -14,8 +14,9 @@ INSTALL_DIR="$VENDOR_DIR/imagemagick"
 mkdir -p $INSTALL_DIR
 IMAGE_MAGICK_VERSION="${IMAGE_MAGICK_VERSION:-6.9.5-10}"
 CACHE_FILE="$CACHE_DIR/imagemagick-$IMAGE_MAGICK_VERSION.tar.gz"
+CACHE_ENABLED="${CACHE_ENABLED:-true}"
 
-if [ ! -f $CACHE_FILE ]; then
+if [ ! -f $CACHE_FILE ] || [ CACHE_ENABLED == false ] || [ CACHE_ENABLED == 0 ] || [ CACHE_ENABLED == "false" ] ; then
   # install imagemagick
   IMAGE_MAGICK_FILE="ImageMagick-$IMAGE_MAGICK_VERSION.tar.xz"
   IMAGE_MAGICK_DIR="ImageMagick-$IMAGE_MAGICK_VERSION"
