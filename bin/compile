@@ -1,6 +1,6 @@
 #!/bin/bash
 # usage: bin/compile <build-dir> <cache-dir> <env-dir>
-
+# cairo fftw ltdl pangocairo rsvg
 indent() {
   sed -u 's/^/       /'
 }
@@ -104,6 +104,197 @@ cat > $install_dir/policy.xml <<EOF
   <policy domain="path" rights="none" pattern="@*" />
 </policymap>
 EOF
+
+echo "-----> Writing colors file"
+
+cat > $install_dir/colors.xml <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE colormap [
+<!ELEMENT colormap (color)+>
+<!ELEMENT color (#PCDATA)>
+<!ATTLIST color name CDATA "0">
+<!ATTLIST color color CDATA "rgb(0,0,0)">
+<!ATTLIST color compliance CDATA "SVG">
+]>
+<colormap>
+  <!-- <color name="none" color="rgba(0,0,0,0)" compliance="SVG, XPM"/> -->
+  <!-- <color name="black" color="rgb(0,0,0)" compliance="SVG, X11, XPM"/> -->
+  <!-- <color name="red" color="rgb(255,0,0)" compliance="SVG, X11, XPM"/> -->
+  <!-- <color name="magenta" color="rgb(255,0,255)" compliance="SVG, X11, XPM"/> -->
+  <!-- <color name="green" color="rgb(0,128,0)" compliance="SVG"/> -->
+  <!-- <color name="cyan" color="rgb(0,255,255)" compliance="SVG, X11, XPM"/> -->
+  <!-- <color name="blue" color="rgb(0,0,255)" compliance="SVG, X11, XPM"/> -->
+  <!-- <color name="yellow" color="rgb(255,255,0)" compliance="SVG, X11, XPM"/> -->
+  <!-- <color name="white" color="rgb(255,255,255)" compliance="SVG, X11"/> -->
+</colormap>
+EOF
+
+echo "-----> Writing type files"
+cat > $install_dir/types.xml <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE typemap [
+<!ELEMENT typemap (type)+>
+<!ELEMENT type (#PCDATA)>
+<!ELEMENT include (#PCDATA)>
+<!ATTLIST type name CDATA #REQUIRED>
+<!ATTLIST type fullname CDATA #IMPLIED>
+<!ATTLIST type family CDATA #IMPLIED>
+<!ATTLIST type foundry CDATA #IMPLIED>
+<!ATTLIST type weight CDATA #IMPLIED>
+<!ATTLIST type style CDATA #IMPLIED>
+<!ATTLIST type stretch CDATA #IMPLIED>
+<!ATTLIST type format CDATA #IMPLIED>
+<!ATTLIST type metrics CDATA #IMPLIED>
+<!ATTLIST type glyphs CDATA #REQUIRED>
+<!ATTLIST type version CDATA #IMPLIED>
+<!ATTLIST include file CDATA #REQUIRED>
+]>
+<typemap>
+   <include file="type-ghostscript.xml" />
+</typemap>
+EOF
+
+cat > $install_dir/type-ghostscript.xml <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE typemap [
+<!ELEMENT typemap (type)+>
+<!ELEMENT type (#PCDATA)>
+<!ELEMENT include (#PCDATA)>
+<!ATTLIST type name CDATA #REQUIRED>
+<!ATTLIST type fullname CDATA #IMPLIED>
+<!ATTLIST type family CDATA #IMPLIED>
+<!ATTLIST type foundry CDATA #IMPLIED>
+<!ATTLIST type weight CDATA #IMPLIED>
+<!ATTLIST type style CDATA #IMPLIED>
+<!ATTLIST type stretch CDATA #IMPLIED>
+<!ATTLIST type format CDATA #IMPLIED>
+<!ATTLIST type metrics CDATA #IMPLIED>
+<!ATTLIST type glyphs CDATA #REQUIRED>
+<!ATTLIST type version CDATA #IMPLIED>
+<!ATTLIST include file CDATA #REQUIRED>
+]>
+<typemap>
+  <type name="AvantGarde-Book" fullname="AvantGarde Book" family="AvantGarde" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/a010013l.afm" glyphs="/usr/share/fonts/type1/gsfonts/a010013l.pfb"/>
+  <type name="AvantGarde-BookOblique" fullname="AvantGarde Book Oblique" family="AvantGarde" foundry="URW" weight="400" style="oblique" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/a010033l.afm" glyphs="/usr/share/fonts/type1/gsfonts/a010033l.pfb"/>
+  <type name="AvantGarde-Demi" fullname="AvantGarde DemiBold" family="AvantGarde" foundry="URW" weight="600" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/a010015l.afm" glyphs="/usr/share/fonts/type1/gsfonts/a010015l.pfb"/>
+  <type name="AvantGarde-DemiOblique" fullname="AvantGarde DemiOblique" family="AvantGarde" foundry="URW" weight="600" style="oblique" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/a010035l.afm" glyphs="/usr/share/fonts/type1/gsfonts/a010035l.pfb"/>
+  <type name="Bookman-Demi" fullname="Bookman DemiBold" family="Bookman" foundry="URW" weight="600" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/b018015l.afm" glyphs="/usr/share/fonts/type1/gsfonts/b018015l.pfb"/>
+  <type name="Bookman-DemiItalic" fullname="Bookman DemiBold Italic" family="Bookman" foundry="URW" weight="600" style="italic" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/b018035l.afm" glyphs="/usr/share/fonts/type1/gsfonts/b018035l.pfb"/>
+  <type name="Bookman-Light" fullname="Bookman Light" family="Bookman" foundry="URW" weight="300" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/b018012l.afm" glyphs="/usr/share/fonts/type1/gsfonts/b018012l.pfb"/>
+  <type name="Bookman-LightItalic" fullname="Bookman Light Italic" family="Bookman" foundry="URW" weight="300" style="italic" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/b018032l.afm" glyphs="/usr/share/fonts/type1/gsfonts/b018032l.pfb"/>
+  <type name="Courier" fullname="Courier Regular" family="Courier" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n022003l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n022003l.pfb"/>
+  <type name="Courier-Bold" fullname="Courier Bold" family="Courier" foundry="URW" weight="700" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n022004l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n022004l.pfb"/>
+  <type name="Courier-Oblique" fullname="Courier Regular Oblique" family="Courier" foundry="URW" weight="400" style="oblique" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n022023l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n022023l.pfb"/>
+  <type name="Courier-BoldOblique" fullname="Courier Bold Oblique" family="Courier" foundry="URW" weight="700" style="oblique" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n022024l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n022024l.pfb"/>
+  <type name="fixed" fullname="Helvetica Regular" family="Helvetica" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n019003l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n019003l.pfb"/>
+  <type name="Helvetica" fullname="Helvetica Regular" family="Helvetica" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n019003l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n019003l.pfb"/>
+  <type name="Helvetica-Bold" fullname="Helvetica Bold" family="Helvetica" foundry="URW" weight="700" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n019004l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n019004l.pfb"/>
+  <type name="Helvetica-Oblique" fullname="Helvetica Regular Italic" family="Helvetica" foundry="URW" weight="400" style="italic" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n019023l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n019023l.pfb"/>
+  <type name="Helvetica-BoldOblique" fullname="Helvetica Bold Italic" family="Helvetica" foundry="URW" weight="700" style="italic" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n019024l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n019024l.pfb"/>
+  <type name="Helvetica-Narrow" fullname="Helvetica Narrow" family="Helvetica Narrow" foundry="URW" weight="400" style="normal" stretch="condensed" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n019043l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n019043l.pfb"/>
+  <type name="Helvetica-Narrow-Oblique" fullname="Helvetica Narrow Oblique" family="Helvetica Narrow" foundry="URW" weight="400" style="oblique" stretch="condensed" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n019063l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n019063l.pfb"/>
+  <type name="Helvetica-Narrow-Bold" fullname="Helvetica Narrow Bold" family="Helvetica Narrow" foundry="URW" weight="700" style="normal" stretch="condensed" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n019044l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n019044l.pfb"/>
+  <type name="Helvetica-Narrow-BoldOblique" fullname="Helvetica Narrow Bold Oblique" family="Helvetica Narrow" foundry="URW" weight="700" style="oblique" stretch="condensed" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n019064l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n019064l.pfb"/>
+  <type name="NewCenturySchlbk-Roman" fullname="New Century Schoolbook" family="NewCenturySchlbk" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/c059013l.afm" glyphs="/usr/share/fonts/type1/gsfonts/c059013l.pfb"/>
+  <type name="NewCenturySchlbk-Italic" fullname="New Century Schoolbook Italic" family="NewCenturySchlbk" foundry="URW" weight="400" style="italic" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/c059033l.afm" glyphs="/usr/share/fonts/type1/gsfonts/c059033l.pfb"/>
+  <type name="NewCenturySchlbk-Bold" fullname="New Century Schoolbook Bold" family="NewCenturySchlbk" foundry="URW" weight="700" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/c059016l.afm" glyphs="/usr/share/fonts/type1/gsfonts/c059016l.pfb"/>
+  <type name="NewCenturySchlbk-BoldItalic" fullname="New Century Schoolbook Bold Italic" family="NewCenturySchlbk" foundry="URW" weight="700" style="italic" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/c059036l.afm" glyphs="/usr/share/fonts/type1/gsfonts/c059036l.pfb"/>
+  <type name="Palatino-Roman" fullname="Palatino Regular" family="Palatino" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/p052003l.afm" glyphs="/usr/share/fonts/type1/gsfonts/p052003l.pfb"/>
+  <type name="Palatino-Italic" fullname="Palatino Italic" family="Palatino" foundry="URW" weight="400" style="italic" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/p052023l.afm" glyphs="/usr/share/fonts/type1/gsfonts/p052023l.pfb"/>
+  <type name="Palatino-Bold" fullname="Palatino Bold" family="Palatino" foundry="URW" weight="700" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/p052004l.afm" glyphs="/usr/share/fonts/type1/gsfonts/p052004l.pfb"/>
+  <type name="Palatino-BoldItalic" fullname="Palatino Bold Italic" family="Palatino" foundry="URW" weight="700" style="italic" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/p052024l.afm" glyphs="/usr/share/fonts/type1/gsfonts/p052024l.pfb"/>
+  <type name="Times-Roman" fullname="Times Regular" family="Times" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n021003l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n021003l.pfb"/>
+  <type name="Times-Bold" fullname="Times Medium" family="Times" foundry="URW" weight="700" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n021004l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n021004l.pfb"/>
+  <type name="Times-Italic" fullname="Times Regular Italic" family="Times" foundry="URW" weight="400" style="italic" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n021023l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n021023l.pfb"/>
+  <type name="Times-BoldItalic" fullname="Times Medium Italic" family="Times" foundry="URW" weight="700" style="italic" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/n021024l.afm" glyphs="/usr/share/fonts/type1/gsfonts/n021024l.pfb"/>
+  <type name="Symbol" fullname="Symbol" family="Symbol" foundry="URW" weight="400" style="normal" stretch="normal" format="type1" metrics="/usr/share/fonts/type1/gsfonts/s050000l.afm" glyphs="/usr/share/fonts/type1/gsfonts/s050000l.pfb" version="0.1" encoding="AdobeCustom"/>
+</typemap>
+EOF
+
+echo "-----> Writing delegates file"
+
+cat > $install_dir/delegates.xml <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE delegatemap [
+<!ELEMENT delegatemap (delegate)+>
+<!ELEMENT delegate (#PCDATA)>
+<!ATTLIST delegate decode CDATA #IMPLIED>
+<!ATTLIST delegate encode CDATA #IMPLIED>
+<!ATTLIST delegate mode CDATA #IMPLIED>
+<!ATTLIST delegate spawn CDATA #IMPLIED>
+<!ATTLIST delegate stealth CDATA #IMPLIED>
+<!ATTLIST delegate thread-support CDATA #IMPLIED>
+<!ATTLIST delegate command CDATA #REQUIRED>
+]>
+<delegatemap>
+  <delegate decode="autotrace" stealth="True" command="&quot;convert&quot; &quot;%i&quot; &quot;pnm:%u&quot;\n&quot;autotrace&quot; -input-format pnm -output-format svg -output-file &quot;%o&quot; &quot;%u&quot;"/>
+  <delegate decode="blender" command="&quot;blender&quot; -b &quot;%i&quot; -F PNG -o &quot;%o&quot;&quot;\n&quot;convert&quot; -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
+  <delegate decode="browse" stealth="True" spawn="True" command="&quot;xdg-open&quot; http://www.imagemagick.org/; rm &quot;%i&quot;"/>
+  <delegate decode="cdr" command="&quot;uniconvertor&quot; &quot;%i&quot; &quot;%o.svg&quot;; mv &quot;%o.svg&quot; &quot;%o&quot;"/>
+  <delegate decode="cgm" command="&quot;uniconvertor&quot; &quot;%i&quot; &quot;%o.svg&quot;; mv &quot;%o.svg&quot; &quot;%o&quot;"/>
+  <delegate decode="dng:decode" command="&quot;ufraw-batch&quot; --silent --create-id=also --out-type=png --out-depth=16 &quot;--output=%u.png&quot; &quot;%i&quot;"/>
+  <delegate decode="doc" command="&quot;soffice&quot; --headless --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%Z&quot;; mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="docx" command="&quot;soffice&quot; --headless --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%Z&quot;; mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="dot" command='&quot;dot&quot; -Tsvg &quot;%i&quot; -o &quot;%o&quot;' />
+  <delegate decode="dvi" command="&quot;dvips&quot; -q -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="dxf" command="&quot;uniconvertor&quot; &quot;%i&quot; &quot;%o.svg&quot;; mv &quot;%o.svg&quot; &quot;%o&quot;"/>
+  <delegate decode="edit" stealth="True" command="&quot;/etc/alternatives/x-terminal-emulator&quot; -title &quot;Edit Image Comment&quot; -e vi &quot;%o&quot;"/>
+  <delegate decode="eps" encode="pdf" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 &quot;-sDEVICE=pdfwrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="eps" encode="ps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ps2write&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="fig" command="&quot;uniconvertor&quot; &quot;%i&quot; &quot;%o.svg&quot;; mv &quot;%o.svg&quot; &quot;%o&quot;"/>
+  <delegate decode="hpg" command="&quot;hp2xx&quot; -q -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;;     mv -f `basename &quot;%o&quot;` &quot;%o&quot;"/>
+  <delegate decode="hpgl" command="&quot;hp2xx&quot; -q -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;;     mv -f `basename &quot;%o&quot;` &quot;%o&quot;"/>
+  <delegate decode="htm" command="&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="html" command="&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="https" command="&quot;curl&quot; -s -k -L -o &quot;%o&quot; &quot;https:%F&quot;"/>
+  <delegate decode="ilbm" command="&quot;ilbmtoppm&quot; &quot;%i&quot; &gt; &quot;%o&quot;"/>
+  <delegate decode="jxr" command="mv &quot;%i&quot; &quot;%i.jxr&quot;; &quot;JxrDecApp&quot; -i &quot;%i.jxr&quot; -o &quot;%o.bmp&quot; -c 0; mv &quot;%i.jxr&quot; &quot;%i&quot;; mv &quot;%o.bmp&quot; &quot;%o&quot;"/>
+  <delegate decode="man" command="&quot;groff&quot; -man -Tps &quot;%i&quot; &gt; &quot;%o&quot;"/>
+  <delegate decode="miff" encode="show" spawn="True" command="&quot;display&quot; -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
+  <delegate decode="miff" encode="win" stealth="True" spawn="True" command="&quot;display&quot; -immutable -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
+  <delegate decode="mpeg:decode" command="&quot;ffmpeg&quot; -v -1 -i &quot;%i&quot; -vframes %S -vcodec pam -an -f rawvideo -y &quot;%u.pam&quot; 2&gt; &quot;%Z&quot;"/>
+  <delegate decode="odt" command="&quot;soffice&quot; --headless --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%Z&quot;; mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="pcl:cmyk" stealth="True" command="&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pamcmyk32&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+  <delegate decode="pcl:color" stealth="True" command="&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ppmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+  <delegate decode="pcl:mono" stealth="True" command="&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+  <delegate decode="pdf" encode="eps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=nodevice&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="pdf" encode="ps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ps2write&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="png" encode="webp" command="&quot;cwebp&quot; -quiet -q %Q &quot;%i&quot; -o &quot;%o&quot;"/>
+  <delegate decode="pnm" encode="ilbm" mode="encode" command="&quot;ppmtoilbm&quot; -24if &quot;%i&quot; &gt; &quot;%o&quot;"/>
+  <delegate decode="bmp" encode="jxr" command="mv &quot;%i&quot; &quot;%i.bmp&quot;; &quot;JxrEncApp&quot; -i &quot;%i.bmp&quot; -o &quot;%o.jxr&quot;; mv &quot;%i.bmp&quot; &quot;%i&quot;; mv &quot;%o.jxr&quot; &quot;%o&quot;"/>
+  <delegate decode="bmp" encode="wdp" command="mv &quot;%i&quot; &quot;%i.bmp&quot;; &quot;JxrEncApp&quot; -i &quot;%i.bmp&quot; -o &quot;%o.jxr&quot;; mv &quot;%i.bmp&quot; &quot;%i&quot;; mv &quot;%o.jxr&quot; &quot;%o&quot;"/>
+  <delegate decode="pov" command="&quot;povray&quot; &quot;+i%i&quot; -D0 &quot;+o%o&quot; +fn%q +w%w +h%h +a -q9 &quot;-kfi%s&quot; &quot;-kff%n&quot;;&quot;convert&quot; -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
+  <delegate decode="ppt" command="&quot;soffice&quot; --headless --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%Z&quot;; mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="pptx" command="&quot;soffice&quot; --headless --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%Z&quot;; mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="ps:alpha" stealth="True" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pngalpha&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
+  <delegate decode="ps:cmyk" stealth="True" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pam&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
+  <delegate decode="ps:color" stealth="True" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pnmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
+  <delegate decode="ps" encode="eps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=nodevice&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="ps" encode="pdf" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pdfwrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+  <delegate decode="ps" encode="print" mode="encode" command="lpr &quot;%i&quot;"/>
+  <delegate decode="ps:mono" stealth="True" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
+  <delegate decode="rgba" encode="rle" mode="encode" command="&quot;rawtorle&quot; -o &quot;%o&quot; -v &quot;%i&quot;"/>
+  <delegate decode="scan" command="&quot;scanimage&quot; -d &quot;%i&quot; &gt; &quot;%o&quot;"/>
+  <delegate decode="scanx" command="&quot;scanimage&quot; &gt; &quot;%o&quot;"/>
+  <delegate decode="shtml" command="&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="sid" command="&quot;mrsidgeodecode&quot; -if sid -i &quot;%i&quot; -of tif -o &quot;%o&quot; &gt; &quot;%u&quot;"/>
+  <delegate decode="svg" command="&quot;rsvg-convert&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="svg:decode" stealth="True" command="&quot;inkscape&quot; &quot;%s&quot; --export-eps=&quot;%s&quot; --export-dpi=&quot;%s&quot; --export-background=&quot;%s&quot; --export-background-opacity=&quot;%s&quot; &gt; &quot;%s&quot; 2&gt;&amp;1"/>
+  <delegate decode="tiff" encode="launch" mode="encode" command="&quot;gimp&quot; &quot;%i&quot;"/>
+  <delegate decode="txt" encode="ps" mode="bi" command="&quot;enscript&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="wdp" command="mv &quot;%i&quot; &quot;%i.jxr&quot;; &quot;JxrDecApp&quot; -i &quot;%i.jxr&quot; -o &quot;%o.bmp&quot;; mv &quot;%i.jxr&quot; &quot;%i&quot;; mv &quot;%o.bmp&quot; &quot;%o&quot;"/>
+  <delegate decode="webp" command="&quot;dwebp&quot; -pam &quot;%i&quot; -o &quot;%o&quot;"/>
+  <delegate decode="wmf" command="&quot;wmf2eps&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="xls" command="&quot;soffice&quot; --headless --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%Z&quot;; mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="xlsx" command="&quot;soffice&quot; --headless --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%Z&quot;; mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="xps:cmyk" stealth="True" command="&quot;gxps&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=bmpsep8&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+  <delegate decode="xps:color" stealth="True" command="&quot;gxps&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ppmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+  <delegate decode="xps:mono" stealth="True" command="&quot;gxps&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+  <delegate encode="mpeg:encode" stealth="True" command="&quot;ffmpeg&quot; -v -1 -i &quot;%F%%d.jpg&quot; &quot;%u.%m&quot; 2&gt; &quot;%Z&quot;"/>
+</delegatemap>
+EOF
+
+
 
 echo "-----> Updating environment variables"
 
