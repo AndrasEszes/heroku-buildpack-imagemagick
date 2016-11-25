@@ -1,91 +1,75 @@
 #!/bin/bash
+# usage: bin/compile <build-dir> <cache-dir> <env-dir>
 
 indent() {
   sed -u 's/^/       /'
 }
 
+loadEnvDir() {
+    local env_dir="${1}"
+    if [ ! -z "${env_dir}" ]
+    then
+        mkdir -p "${env_dir}"
+        env_dir=$(cd "${env_dir}/" && pwd)
+        for key in IMAGEMAGICK_VERSION
+        do
+            if [ -f "${env_dir}/${key}" ]
+            then
+                export "${key}=$(cat "${env_dir}/${key}" | sed -e "s:\${build_dir}:${build}:")"
+            fi
+        done
+    fi
+}
+
 echo "-----> Install ImageMagick"
 
-BUILD_DIR=$1
-CACHE_DIR=$2
-VENDOR_DIR="$BUILD_DIR/vendor"
-mkdir -p $VENDOR_DIR
-INSTALL_DIR="$VENDOR_DIR/imagemagick"
-mkdir -p $INSTALL_DIR
-IMAGE_MAGICK_VERSION="${IMAGE_MAGICK_VERSION:-6.8.9-10}"
-CACHE_FILE="$CACHE_DIR/imagemagick-$IMAGE_MAGICK_VERSION.tar.gz"
+mkdir -p "$1" "$2"
+build=$(cd "$1/" && pwd)
+cache=$(cd "$2/" && pwd)
+env_dir="${3}"
 
-if [ ! -f $CACHE_FILE ] ; then
-  # install imagemagick
-  IMAGE_MAGICK_FILE="ImageMagick-$IMAGE_MAGICK_VERSION.tar.xz"
-  IMAGE_MAGICK_DIR="ImageMagick-$IMAGE_MAGICK_VERSION"
-  # SSL cert used on imagemagick not recognized by heroku.
-  IMAGE_MAGICK_URL="http://www.imagemagick.org/download/releases/$IMAGE_MAGICK_FILE"
+loadEnvDir "${env_dir}"
 
-  echo "-----> Downloading ImageMagick from $IMAGE_MAGICK_URL"
-  wget $IMAGE_MAGICK_URL -P $BUILD_DIR | indent
+imagemagick_version="${IMAGEMAGICK_VERSION:-6.8.9-10}"
+# vendor_dir="$build/imagemagick_vendor"
+# install_dir="$vendor_dir/imagemagick"
+# cache_file="$cache/imagemagick-$imagemagick_version.tar.gz"
 
-  echo "-----> Extracting ImageMagick from $BUILD_DIR/$IMAGE_MAGICK_FILE"
-  if [ ! -f $BUILD_DIR/$IMAGE_MAGICK_FILE ]; then
-    echo "Error: Unable to download ImageMagick" | indent
-    ls $BUILD_DIR | indent
-    exit 1;
-  fi
-  tar xvf $BUILD_DIR/$IMAGE_MAGICK_FILE | indent
+# mkdir -p $install_dir
 
-  echo "-----> Building ImageMagick"
-  cd $IMAGE_MAGICK_DIR
-  export CPPFLAGS="-I$INSTALL_DIR/include"
-  export LDFLAGS="-L$INSTALL_DIR/lib"
-  ./configure --prefix=$INSTALL_DIR
-  make && make install
-  cd ..
-  rm -rf $IMAGE_MAGICK_DIR
+# if [ ! -f $cache_file ] ; then
+    imagemagick_path="ImageMagick-$imagemagick_version"
+    imagemagick_file="$imagemagick_path.tar.xz"
+    imagemagick_link="http://www.imagemagick.org/download/releases/$imagemagick_file"
 
-  # cache for future deploys
-  echo "-----> Caching ImageMagick installation"
-  cd $VENDOR_DIR
-  REL_INSTALL_DIR="imagemagick"
-  tar czf $REL_INSTALL_DIR.tar.gz $REL_INSTALL_DIR
-  mv $REL_INSTALL_DIR.tar.gz $CACHE_FILE
+    echo "-----> Downloading ImageMagick from $imagemagick_link"
 
-else
-  # cache exists, extract it
-  echo "-----> Extracting ImageMagick $CACHE_FILE => $VENDOR_DIR"
-  tar xzf $CACHE_FILE -C $VENDOR_DIR
-fi
+    wget $imagemagick_link -P $build | indent
 
-echo "-----> Writing policy file"
-mkdir -p $INSTALL_DIR/etc/ImageMagick
-cat > $INSTALL_DIR/policy.xml <<EOF
-<policymap>
-  <policy domain="coder" rights="none" pattern="EPHEMERAL" />
-  <policy domain="coder" rights="none" pattern="HTTPS" />
-  <policy domain="coder" rights="none" pattern="MVG" />
-  <policy domain="coder" rights="none" pattern="MSL" />
-</policymap>
-EOF
+    echo "-----> Extracting ImageMagick from $build/$imagemagick_file"
 
-# update PATH and LD_LIBRARY_PATH
-echo "-----> Updating environment variables"
-PROFILE_PATH="$BUILD_DIR/.profile.d/imagemagick.sh"
-ACTUAL_INSTALL_PATH="$HOME/vendor/imagemagick"
-mkdir -p $(dirname $PROFILE_PATH)
-echo "export PATH=$ACTUAL_INSTALL_PATH/bin:\$PATH" >> $PROFILE_PATH
-echo "export LD_LIBRARY_PATH=$ACTUAL_INSTALL_PATH/lib:\$LD_LIBRARY_PATH" >> $PROFILE_PATH
-echo "export MAGICK_CONFIGURE_PATH=$ACTUAL_INSTALL_PATH" >> $PROFILE_PATH
+    if [ ! -f $build/$imagemagick_file ]; then
+        echo "Error: Compressed ImageMagick file is not found" | indent
+        ls $build | indent
+        exit 1;
+    fi
 
-# DOWNLOAD_URL="http://www.imagemagick.org/download/ImageMagick-6.9.2-0.tar.gz"
+    tar xvf $build/$imagemagick_file | indent
 
-# echo "DOWNLOAD_URL = " $DOWNLOAD_URL | indent
+    echo "-----> Building ImageMagick"
 
-# cd $BUILD_DIR
-# mkdir -p $VENDOR_DIR
-# cd $VENDOR_DIR
-# curl -L --silent $DOWNLOAD_URL | tar xz
+    cd $imagemagick_path
+    ./configure
+    make && make install
 
-# echo "exporting PATH and LIBRARY_PATH" | indent
-# PROFILE_PATH="$BUILD_DIR/.profile.d/imagemagick.sh"
-# mkdir -p $(dirname $PROFILE_PATH)
-# echo 'export PATH="$PATH:$HOME/vendor/ImageMagick-6.9.2/bin"' >> $PROFILE_PATH
-# echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/vendor/ImageMagick-6.9.2/lib"' >> $PROFILE_PATH
+    # cache for future deploys
+    # echo "-----> Caching ImageMagick installation"
+    # cd $vendor_dir
+    # rel_install_dir="imagemagick"
+    # tar czf $rel_install_dir.tar.gz $rel_install_dir
+    # mv $rel_install_dir.tar.gz $cache_file
+# else
+#     # cache exists, extract it
+#     echo "-----> Extracting ImageMagick $cache_file => $vendor_dir"
+#     tar xzf $cache_file -C $vendor_dir
+# fi
