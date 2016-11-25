@@ -61,6 +61,7 @@ imagemagick_version="${IMAGEMAGICK_VERSION:-6.8.9-10}"
     cd $imagemagick_path
     ./configure
     make && make install
+    ldconfig /usr/local/lib
 
     # cache for future deploys
     # echo "-----> Caching ImageMagick installation"
