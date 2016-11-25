@@ -294,13 +294,10 @@ cat > $install_dir/delegates.xml <<EOF
 </delegatemap>
 EOF
 
-
-
 echo "-----> Updating environment variables"
 
 profile_path="$build/.profile.d/imagemagick.sh"
 actual_install_path="$HOME/vendor/imagemagick"
-mkdir -p $(dirname $profile_path)
 
 echo "export PATH=$actual_install_path/bin:\$PATH" >> $profile_path
 echo "export LD_LIBRARY_PATH=$actual_install_path/lib:\$LD_LIBRARY_PATH" >> $profile_path
