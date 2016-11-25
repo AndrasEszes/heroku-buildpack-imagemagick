@@ -31,13 +31,13 @@ env_dir="${3}"
 loadEnvDir "${env_dir}"
 
 imagemagick_version="${IMAGEMAGICK_VERSION:-6.8.9-10}"
-# vendor_dir="$build/imagemagick_vendor"
-# install_dir="$vendor_dir/imagemagick"
-# cache_file="$cache/imagemagick-$imagemagick_version.tar.gz"
+vendor_dir="$build/imagemagick_vendor"
+install_dir="$vendor_dir/imagemagick"
+cache_file="$cache/imagemagick-$imagemagick_version.tar.gz"
 
-# mkdir -p $install_dir
+mkdir -p $install_dir
 
-# if [ ! -f $cache_file ] ; then
+if [ ! -f $cache_file ] ; then
     imagemagick_path="ImageMagick-$imagemagick_version"
     imagemagick_file="$imagemagick_path.tar.xz"
     imagemagick_link="http://www.imagemagick.org/download/releases/$imagemagick_file"
@@ -59,18 +59,40 @@ imagemagick_version="${IMAGEMAGICK_VERSION:-6.8.9-10}"
     echo "-----> Building ImageMagick"
 
     cd $imagemagick_path
-    ./configure
+    export CPPFLAGS="-I$install_dir/include"
+    export LDFLAGS="-L$install_dir/lib"
+    ./configure --prefix=$install_dir
     make && make install
-    ldconfig /usr/local/lib
 
-    # cache for future deploys
-    # echo "-----> Caching ImageMagick installation"
-    # cd $vendor_dir
-    # rel_install_dir="imagemagick"
-    # tar czf $rel_install_dir.tar.gz $rel_install_dir
-    # mv $rel_install_dir.tar.gz $cache_file
-# else
-#     # cache exists, extract it
-#     echo "-----> Extracting ImageMagick $cache_file => $vendor_dir"
-#     tar xzf $cache_file -C $vendor_dir
-# fi
+    echo "-----> Caching ImageMagick installation"
+
+    cd $vendor_dir
+    rel_install_dir="imagemagick"
+    tar czf $rel_install_dir.tar.gz $rel_install_dir
+    mv $rel_install_dir.tar.gz $cache_file
+else
+    # cache exists, extract it
+    echo "-----> Extracting ImageMagick $cache_file => $vendor_dir"
+    tar xzf $cache_file -C $vendor_dir
+fi
+
+echo "-----> Writing policy file"
+
+mkdir -p $install_dir/etc/ImageMagick
+cat > $install_dir/policy.xml <<EOF
+<policymap>
+  <policy domain="coder" rights="none" pattern="EPHEMERAL" />
+  <policy domain="coder" rights="none" pattern="HTTPS" />
+  <policy domain="coder" rights="none" pattern="MVG" />
+  <policy domain="coder" rights="none" pattern="MSL" />
+</policymap>
+EOF
+
+echo "-----> Updating environment variables"
+
+profile_path="$build/.profile.d/imagemagick.sh"
+mkdir -p $(dirname $profile_path)
+
+echo "export PATH=$install_dir/bin:\$PATH" >> $profile_path
+echo "export LD_LIBRARY_PATH=$install_dir/lib:\$LD_LIBRARY_PATH" >> $profile_path
+echo "export MAGICK_CONFIGURE_PATH=$install_dir" >> $profile_path
